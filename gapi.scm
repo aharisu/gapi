@@ -66,7 +66,15 @@
                   (display " ")
                   (display (car text-list))
                   (loop (cdr text-list) (+ 1 len (string-length (car text-list))))))))))
-      (print left-space-text (string-join text-list) " "))))
+      (begin
+        (if (> 0 pos)
+          (begin
+            (display left-space-text)
+            (display (car text-list)))
+          (display " "))
+        (display (string-join (if (> 0 pos) (cdr text-list) text-list) " "))
+        (when newline?
+          (newline))))))
 
 (define (print-description name description-list)
   (print (make-bold-text name))
