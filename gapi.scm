@@ -223,7 +223,7 @@
                     (when (zero? state)
                       (set! candidate (substring-match-list 
                                         text 
-                                        (cons* "#all" "#quit" 
+                                        (cons* "#all" "#quit" "#exit"
                                                (unit-candidate cur-unit)))))
                     (if (null? candidate)
                       #f
