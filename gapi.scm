@@ -306,7 +306,7 @@
             )
 
 ;;
-;;definetion of use load
+;;definetion of use command
 (define-cmd load
             variable-length-argument
             ;;execute
