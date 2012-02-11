@@ -278,6 +278,8 @@
   (cadr cmd))
 (define (cmd-completion cmd)
   (cddr cmd))
+(define (get-all-command)
+  (cons "#exit" (map car *commands*)))
 
 (define (variable-length-argument num) #t)
 
@@ -367,7 +369,9 @@
                             (if cmd
                               ((cmd-completion cmd) text)
                               '()))
-                          (unit-candidate-list text)))))
+                          (append
+                            (unit-candidate-list text)
+                            (substring-match-list text (get-all-command)))))))
                   (if (null? candidate)
                     #f
                     (begin0
