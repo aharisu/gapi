@@ -16,14 +16,10 @@
                            *state-list*)))
 (define (get-state name)
   (assoc-ref *state-list* name #f))
-(define (state-in state)
-  (car state))
-(define (state-exec state)
-  (cadr state))
-(define (state-out state)
-  (caddr state))
-(define (state-completion state)
-  (cdddr state))
+(define state-in car)
+(define state-exec cadr) 
+(define state-out caddr)
+(define state-completion cdddr)
 
 
 ;;---------------------
@@ -77,7 +73,7 @@
   (if (null? description-list)
     (print "No doccument.")
     (for-each
-      (cut print <>)
+      print
       description-list)))
 
 
@@ -87,7 +83,7 @@
 (define-method output ((context <gapi-context>) (unit <unit-proc>))
   (display "(")
   (display (make-bold-text (ref unit 'name)))
-  (print-align-text (map (cut param-name <>) (ref unit 'param))
+  (print-align-text (map param-name (ref unit 'param))
                     (make-string (+ 2 (string-length (ref unit 'name))) #\space)
                     :pos (+ 1 (string-length (ref unit 'name)))
                     :newline? #f)
@@ -193,12 +189,12 @@
 
 (define-method unit-candidate ((unit <unit-proc>))
   (cons "#return" (append (map 
-                           (cut param-name <>) 
+                           param-name
                            (params-without-optional (ref unit 'param)))
                          (next-method))))
 
 (define-method unit-candidate ((unit <unit-class>))
-  (append (map (cut param-name <>) (ref unit 'slots))
+  (append (map param-name (ref unit 'slots))
           (next-method)))
 
 ;;
@@ -272,12 +268,9 @@
                          *commands*)))
 (define (get-command cmd)
   (assoc-ref *commands* cmd #f))
-(define (cmd-valid-arg cmd)
-  (car cmd))
-(define (cmd-exec cmd)
-  (cadr cmd))
-(define (cmd-completion cmd)
-  (cddr cmd))
+(define cmd-valid-arg car)
+(define cmd-exec cadr)
+(define cmd-completion cddr)
 (define (get-all-command)
   (cons "#exit" (map car *commands*)))
 
@@ -344,7 +337,7 @@
                     (if cmd
                       (if ((cmd-valid-arg cmd) (length (cdr tokens)))
                         (apply (cmd-exec cmd) (cdr tokens))
-                        (print (format #f "Invalid argument.")))
+                        (print "Invalid argument."))
                       (print (format #f "Unkown command [~a]." line))))
                   (let1 units (exact-match-unit-list line)
                     (case (length units)
