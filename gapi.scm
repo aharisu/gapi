@@ -26,7 +26,12 @@
 ;;Definition of unit state
 ;;---------------------
 
-(define enable-text-format? #t)
+(cond-expand
+  [gauche.os.windows
+    (define enable-text-format? #f)]
+  [else
+    (define enable-text-format? #t)])
+
 
 (define (make-underline-text text)
   (string-append
