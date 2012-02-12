@@ -81,13 +81,18 @@
         (when newline?
           (newline))))))
 
-(define (print-description name description-list)
-  (print (make-bold-text name))
+(define (print-description name description-list :optional (print-no-document? #t))
   (if (null? description-list)
-    (print "No doccument.")
-    (for-each
-      print
-      description-list)))
+    (when print-no-document?
+      (print (make-bold-text name))
+      (print "    No doccument."))
+    (begin
+      (print (make-bold-text name))
+      (for-each
+        (lambda (text)
+          (display "    ")
+          (print text))
+        description-list))))
 
 
 (define-class <gapi-context> (<convert-context>) ())
@@ -184,17 +189,17 @@
     [else #f]))
 
 (define-method unit-all-info ((unit <unit-top>))
-  (print-description (ref unit 'name) (ref unit 'description)))
+  (print-description (ref unit 'name) (ref unit 'description) #f))
 
 (define-method unit-all-info ((unit <unit-proc>))
   (next-method)
-  (print-description "return" (ref unit 'return))
-  (for-each (lambda (p) (print-description (param-name p) (param-description p))) 
+  (print-description "return" (ref unit 'return) #f)
+  (for-each (lambda (p) (print-description (param-name p) (param-description p) #f)) 
             (params-without-optional (ref unit 'param))))
 
 (define-method unit-all-info ((unit <unit-class>))
   (next-method)
-  (for-each (lambda (p) (print-description (param-name p) (param-description p))) 
+  (for-each (lambda (p) (print-description (param-name p) (param-description p) #f)) 
             (ref unit 'slots)))
 
 (define-method unit-candidate ((unit <unit-top>))
